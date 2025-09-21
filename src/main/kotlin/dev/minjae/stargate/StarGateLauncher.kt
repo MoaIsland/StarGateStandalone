@@ -1,5 +1,6 @@
 package dev.minjae.stargate
 
+import alemiz.stargate.server.ServerSession
 import alemiz.stargate.server.StarGateServer
 import alemiz.stargate.utils.ServerLoader
 import alemiz.stargate.utils.StarGateLogger
@@ -15,7 +16,12 @@ import java.io.File
 import java.net.InetSocketAddress
 import java.util.concurrent.atomic.AtomicBoolean
 
+typealias SessionFunc = (ServerSession) -> Unit
+
 object StarGateLauncher {
+    val authenticatedHandlers: MutableList<SessionFunc> = mutableListOf()
+    val disconnectedHandlers: MutableList<SessionFunc> = mutableListOf()
+
     @JvmStatic
     fun main(args: Array<String>) {
         val mapper = YAMLMapper()
@@ -36,6 +42,8 @@ object StarGateLauncher {
                 return logger
             }
         })
+
+        thread.serverListener = StarGateServerListener()
 
         val pluginManager = PluginManager(logger, thread)
         pluginManager.loadPlugins()
