@@ -3,10 +3,11 @@ plugins {
     id("com.gradleup.shadow") version "9.1.0"
     idea
     application
+    `maven-publish`
 }
 
 group = "dev.minjae.stargate"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -33,6 +34,30 @@ idea {
         isDownloadJavadoc = true
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "minjae-repo"
+            url = uri("https://repo.minjae.dev/snapshots")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 
 application {
     mainClass.set("dev.minjae.stargate.StarGateLauncher")
