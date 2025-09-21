@@ -1,0 +1,5 @@
+name: ExamplePlugin
+version: 1.0.0
+description: A simple example plugin for StarGate
+main: dev.minjae.stargate.plugin.Main
+author: alvin0319
