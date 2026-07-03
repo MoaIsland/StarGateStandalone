@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    ports:
+      - "47007:47007"
+    volumes:
+      - ./plugins:/app/plugins
+    restart: no
