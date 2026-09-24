@@ -27,12 +27,17 @@ object StarGateLauncher {
         val mapper = YAMLMapper()
             .registerKotlinModule()
             .registerModule(BlackbirdModule())
-        val config: StarGateConfig = File("config.yml").apply {
-            if (!exists()) {
-                createNewFile()
-                writeBytes({}.javaClass.getResourceAsStream("/config.yml")!!.readAllBytes())
-            }
-        }.inputStream().bufferedReader().use(mapper::readValue)
+        val configFile = File("config.yml")
+        if (!configFile.exists()) {
+            val defaults = StarGateLauncher::class.java.getResourceAsStream("/config.yml")
+                ?: error("config.yml is missing from this jar, cannot write the default configuration")
+            // createNewFile() is deliberately not used: if reading the defaults fails we do not
+            // want to leave behind an empty config.yml that makes every later start fail instead.
+            defaults.use { configFile.writeBytes(it.readAllBytes()) }
+            println("Created config.yml. Set auth.password before starting the server again.")
+            return
+        }
+        val config: StarGateConfig = configFile.inputStream().bufferedReader().use(mapper::readValue)
         val rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger
         rootLogger.level = if (config.debug) Level.DEBUG else Level.INFO
         val logger = LogbackLoggerAdapter()

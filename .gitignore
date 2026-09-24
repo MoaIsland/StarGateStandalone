@@ -41,5 +41,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-plugins/
-config.yml
+# Runtime files produced next to the jar. Anchored with a leading slash so they do not
+# also match src/main/resources/config.yml, which ships the defaults.
+/plugins/
+/config.yml
+/logs/
