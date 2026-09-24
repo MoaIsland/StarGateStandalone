@@ -69,6 +69,13 @@ publishing {
     }
 }
 
+kotlin {
+    // Pinned so the produced class files do not depend on whichever JDK Gradle happens to run
+    // on. 21 is the current LTS and nothing here needs anything newer; leaving it unset made
+    // a CI build emit class file version 68, which then failed to load on a Java 21 server.
+    jvmToolchain(21)
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
