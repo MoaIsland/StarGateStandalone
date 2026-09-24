@@ -29,8 +29,11 @@ class PluginManager(
         for (jarFile in jarFiles) {
             try {
                 loadPlugin(jarFile)
-            } catch (e: Exception) {
-                logger.error("Failed to load plugin from ${jarFile.name}: ${e.message}")
+            } catch (e: Throwable) {
+                // Throwable, not Exception: a jar built for a newer JDK raises
+                // UnsupportedClassVersionError, which is an Error. Catching only Exception
+                // let one bad jar take the whole server down during startup.
+                logger.error("Failed to load plugin from ${jarFile.name}: $e")
             }
         }
 
@@ -102,8 +105,8 @@ class PluginManager(
             try {
                 plugin.onEnable(server)
                 logger.info("Enabled plugin: ${info.name}")
-            } catch (e: Exception) {
-                logger.error("Failed to enable plugin ${info.name}: ${e.message}")
+            } catch (e: Throwable) {
+                logger.error("Failed to enable plugin ${info.name}: $e")
             }
         }
     }
@@ -114,8 +117,8 @@ class PluginManager(
             try {
                 plugin.onDisable()
                 logger.info("Disabled plugin: ${info.name}")
-            } catch (e: Exception) {
-                logger.error("Failed to disable plugin ${info.name}: ${e.message}")
+            } catch (e: Throwable) {
+                logger.error("Failed to disable plugin ${info.name}: $e")
             }
         }
     }
