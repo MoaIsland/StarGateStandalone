@@ -41,6 +41,10 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+            // GitHub Packages rejects an artifactId containing uppercase letters with a bare
+            // 422 Unprocessable Entity, so the published coordinate is lower-cased. The Gradle
+            // project keeps its original name; only the published artifactId differs.
+            artifactId = "stargate-standalone"
         }
     }
     repositories {
