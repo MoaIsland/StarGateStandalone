@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Forks do not have the registry secrets, so this would fail on every push there.
+    if: github.repository == 'alvin0319/StarGateStandalone'
 
     steps:
       - name: Checkout code

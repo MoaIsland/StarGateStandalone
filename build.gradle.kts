@@ -7,7 +7,9 @@ plugins {
 }
 
 group = "dev.minjae.stargate"
-version = "1.2"
+// Fork version. Upstream never published 1.2, so this suffix marks "upstream 1.2 plus
+// the MoaIsland startup fixes" and cannot be confused with a future upstream release.
+version = "1.2-moa.1"
 
 repositories {
     mavenCentral()
@@ -42,6 +44,16 @@ publishing {
         }
     }
     repositories {
+        // Fork publishing target. Consumers need a GitHub token with read:packages,
+        // which CI gets for free through GITHUB_TOKEN.
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/MoaIsland/StarGateStandalone")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: providers.gradleProperty("gpr.user").orNull
+                password = System.getenv("GITHUB_TOKEN") ?: providers.gradleProperty("gpr.token").orNull
+            }
+        }
         maven {
             name = "minjae-repo"
             url = uri("https://repo.minjae.dev/snapshots")

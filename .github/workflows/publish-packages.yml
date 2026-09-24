@@ -1,0 +1,32 @@
+name: Publish to GitHub Packages
+
+# Publishes dev.minjae.stargate:StarGateStandalone so StarGateAddons can compile against
+# this fork instead of the upstream 1.1 artifact on repo.minjae.dev.
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '24'
+
+      - name: Publish
+        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository --no-daemon
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
