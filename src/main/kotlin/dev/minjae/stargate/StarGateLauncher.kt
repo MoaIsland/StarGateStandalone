@@ -14,7 +14,7 @@ import dev.minjae.stargate.plugin.PluginManager
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.InetSocketAddress
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.CountDownLatch
 
 typealias SessionFunc = (ServerSession) -> Unit
 
@@ -55,16 +55,18 @@ object StarGateLauncher {
         pluginManager.enablePlugins()
         thread.isDaemon = true
         thread.start()
-        val shutdown = AtomicBoolean(false)
+        // Parking the main thread on a latch instead of spinning on a flag. The previous busy
+        // loop kept one core pinned at 100% for the whole lifetime of the process.
+        // Note that joining the server thread does not work: StarGateServer.run() returns as
+        // soon as the Netty bind is issued, so the process would exit right after startup.
+        val shutdownLatch = CountDownLatch(1)
         Runtime.getRuntime().addShutdownHook(Thread {
-            shutdown.set(true)
             logger.info("Shutting down...")
             pluginManager.disablePlugins()
             thread.shutdown()
             logger.info("Shutdown complete.")
+            shutdownLatch.countDown()
         })
-        while (!shutdown.get()) {
-            // NOOP
-        }
+        shutdownLatch.await()
     }
 }
