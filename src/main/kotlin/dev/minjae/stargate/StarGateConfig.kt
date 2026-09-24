@@ -13,6 +13,7 @@ data class StarGateConfig(
     )
     data class AuthConfig(
         val password: String,
+        @param:JsonProperty("block-same-names")
         @get:JsonProperty("block-same-names")
         val blockSameNames: Boolean
     )

@@ -1,0 +1,14 @@
+bind:
+  # Keep this on the loopback address unless the StarGate server has to be reached
+  # from another host. Authentication is a single shared password, so a public bind
+  # means anyone who can reach the port can join the server mesh.
+  address: 127.0.0.1
+  port: 47007
+
+auth:
+  # Must match the password configured on every StarGate client.
+  password: CHANGE_ME
+  # Reject a client whose name is already taken by a connected session.
+  block-same-names: true
+
+debug: false
