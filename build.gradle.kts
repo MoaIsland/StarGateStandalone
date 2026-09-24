@@ -7,9 +7,9 @@ plugins {
 }
 
 group = "dev.minjae.stargate"
-// Fork version. Upstream never published 1.2, so this suffix marks "upstream 1.2 plus
-// the MoaIsland startup fixes" and cannot be confused with a future upstream release.
-version = "1.2-moa.1"
+// Fork version: upstream 1.2 plus the MoaIsland startup fixes. Upstream never published
+// 1.2 itself (repo.minjae.dev stops at 1.1), so the patch number is free to use.
+version = "1.2.1"
 
 repositories {
     mavenCentral()
