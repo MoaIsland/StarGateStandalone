@@ -48,7 +48,7 @@ object StarGateLauncher {
             }
         })
 
-        thread.serverListener = StarGateServerListener()
+        thread.serverListener = StarGateServerListener(config.auth.blockSameNames, logger)
 
         val pluginManager = PluginManager(logger, thread)
         pluginManager.loadPlugins()

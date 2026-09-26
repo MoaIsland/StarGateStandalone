@@ -8,7 +8,10 @@ bind:
 auth:
   # Must match the password configured on every StarGate client.
   password: CHANGE_ME
-  # Reject a client whose name is already taken by a connected session.
+  # When a client authenticates with a name that a connected session already holds, the new
+  # connection is refused (its DisconnectPacket reason starts with NAME_TAKEN) and the session
+  # that connected first keeps the name. A session that has closed gives its name up at once.
+  # With false, both connect under the same name and split the traffic meant for it.
   block-same-names: true
 
 debug: false
